@@ -14,11 +14,7 @@ import {
   doc, 
   setDoc, 
   getDoc, 
-  updateDoc,
-  collection,
-  query,
-  where,
-  getDocs
+  updateDoc
 } from 'firebase/firestore';
 
 // Create context
@@ -28,8 +24,6 @@ export const AppContext = createContext();
 export const useAppContext = () => useContext(AppContext);
 
 // Firebase configuration
-// IMPORTANT: Replace these placeholder values with your actual Firebase config
-// You can find these values in your Firebase project settings
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -40,11 +34,9 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
-// Initialize Firebase when config is provided
 let app, auth, db;
 
 const initializeFirebase = () => {
-  // Only initialize if apiKey is set to a real value
   if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_API_KEY") {
     app = initializeApp(firebaseConfig);
     auth = getAuth(app);
@@ -57,21 +49,18 @@ const initializeFirebase = () => {
 
 initializeFirebase();
 
-// Export db instance
 export { db };
 
-// Add this after the Firebase initialization
 const handleFirebaseError = (error) => {
   console.error('Firebase operation failed:', error);
-  // You might want to add toast notifications here
   throw error;
 };
 
-// Provider component
 export const AppProvider = ({ children }) => {
   // User authentication state
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
+
   // Player state
   const [player, setPlayer] = useState({
     name: 'AVIRIZZZ',
@@ -81,20 +70,15 @@ export const AppProvider = ({ children }) => {
     nextLevelXP: 1000,
   });
   
-  // Timetable state
   const [timetable, setTimetable] = useState({
     overallLevel: 1,
     totalXP: 0,
     nextLevelXP: 500
   });
 
-  // Habits state
   const [habits, setHabits] = useState([]);
-  
-  // Hobbies state
   const [hobbies, setHobbies] = useState([]);
-  
-  // Academics state
+
   const [academics, setAcademics] = useState({
     subjects: [],
     overallLevel: 1,
@@ -102,7 +86,6 @@ export const AppProvider = ({ children }) => {
     nextLevelXP: 500
   });
   
-  // Goals state
   const [goals, setGoals] = useState({
     weekly: [],
     monthly: [],
@@ -111,7 +94,6 @@ export const AppProvider = ({ children }) => {
     nextLevelXP: 500
   });
   
-  // Books state
   const [books, setBooks] = useState({
     reading: [],
     completed: [],
@@ -120,40 +102,35 @@ export const AppProvider = ({ children }) => {
     nextLevelXP: 500
   });
   
-  // Social media state
   const [socialMedia, setSocialMedia] = useState({
     dailyUsage: 0,
-    limit: 120, // in minutes
+    limit: 120,
     disciplineLevel: 1,
     streakDays: 0,
     totalXP: 0,
     nextLevelXP: 500
   });
 
-  // Add these state variables
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Firebase auth state observer
+  // Auth observer
   useEffect(() => {
     if (auth) {
       const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
         setUser(currentUser);
         setAuthLoading(false);
         
-        // If user is logged in, fetch their data
         if (currentUser) {
           fetchUserData(currentUser.uid);
         }
       });
-      
       return () => unsubscribe();
     } else {
       setAuthLoading(false);
     }
   }, []);
-  
-  // Fetch user data from Firestore
+
   const fetchUserData = async (userId) => {
     if (!db) return;
     
@@ -183,13 +160,11 @@ export const AppProvider = ({ children }) => {
     }
   };
   
-  // Save user data to Firestore
   const saveUserData = async () => {
     if (!db || !user) return;
     
     try {
       const userDocRef = doc(db, "users", user.uid);
-      
       await setDoc(userDocRef, {
         player,
         habits,
@@ -207,34 +182,22 @@ export const AppProvider = ({ children }) => {
       console.error("Error saving user data:", error);
     }
   };
-  
-  // Save data whenever state changes and user is authenticated
+
+  // Auto save, only when user is logged in
   useEffect(() => {
-    let timeoutId;
-    
-    if (user) {
-      // Debounce save operations
-      timeoutId = setTimeout(() => {
-        saveUserData();
-      }, 1000); // Wait 1 second after last change before saving
-    }
-    
-    return () => {
-      if (timeoutId) clearTimeout(timeoutId);
-    };
-  }, [player, habits, hobbies, academics, goals, books, socialMedia, timetable]);
-  
-  // Authentication functions
+    if (!user) return;
+    let timeoutId = setTimeout(() => {
+      saveUserData();
+    }, 1000);
+    return () => clearTimeout(timeoutId);
+  }, [user, player, habits, hobbies, academics, goals, books, socialMedia, timetable]);
+
+  // Auth functions
   const signup = async (email, password, displayName) => {
     if (!auth) throw new Error("Firebase not initialized");
-    
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      
-      // Update profile with display name
       await updateProfile(userCredential.user, { displayName });
-      
-      // Create user document in Firestore
       if (db) {
         const userDocRef = doc(db, "users", userCredential.user.uid);
         await setDoc(userDocRef, {
@@ -251,17 +214,15 @@ export const AppProvider = ({ children }) => {
           timetable
         });
       }
-      
       return userCredential.user;
     } catch (error) {
       console.error("Error signing up:", error);
       throw error;
     }
   };
-  
+
   const login = async (email, password) => {
     if (!auth) throw new Error("Firebase not initialized");
-    
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       return userCredential.user;
@@ -270,23 +231,18 @@ export const AppProvider = ({ children }) => {
       throw error;
     }
   };
-  
-  // Update the logout function
+
   const logout = async () => {
     if (!auth) throw new Error("Firebase not initialized");
-    
     setIsLoading(true);
     try {
       await signOut(auth);
-      // Clear all state
+
+      // Clear user first so autosave won’t run with empty state
       setUser(null);
-      setPlayer({
-        name: 'AVIRIZZZ',
-        level: 1,
-        title: 'Noob Idiot',
-        totalXP: 0,
-        nextLevelXP: 1000,
-      });
+
+      // Reset local state
+      setPlayer({ name: 'AVIRIZZZ', level: 1, title: 'Noob Idiot', totalXP: 0, nextLevelXP: 1000 });
       setHabits([]);
       setHobbies([]);
       setAcademics({ subjects: [], overallLevel: 1, totalXP: 0, nextLevelXP: 500 });
@@ -294,24 +250,19 @@ export const AppProvider = ({ children }) => {
       setBooks({ reading: [], completed: [], overallLevel: 1, totalXP: 0, nextLevelXP: 500 });
       setSocialMedia({ dailyUsage: 0, limit: 120, disciplineLevel: 1, streakDays: 0, totalXP: 0, nextLevelXP: 500 });
       setTimetable({ overallLevel: 1, totalXP: 0, nextLevelXP: 500 });
-      localStorage.clear(); // Clear any local storage
+      localStorage.clear();
     } catch (error) {
       handleFirebaseError(error);
     } finally {
       setIsLoading(false);
     }
   };
-  
+
   const updateUserProfile = async (updates) => {
     if (!auth || !auth.currentUser) throw new Error("Not authenticated");
-    
     try {
       await updateProfile(auth.currentUser, updates);
-      
-      // Update user state
       setUser({ ...auth.currentUser });
-      
-      // Update Firestore if needed
       if (db && (updates.displayName || updates.photoURL)) {
         const userDocRef = doc(db, "users", auth.currentUser.uid);
         await updateDoc(userDocRef, {
@@ -324,23 +275,18 @@ export const AppProvider = ({ children }) => {
       throw error;
     }
   };
-  
-  // Calculate overall player level based on all activities
+
+  // Calculate overall player level
   useEffect(() => {
     const calculateOverallLevel = () => {
-      // Calculate weighted average of all component levels
       const academicsWeight = 1.0;
       const goalsWeight = 1.0;
       const booksWeight = 1.0;
       const socialWeight = 1.0;
       const timetableWeight = 1.0;
-      
-      // Calculate average habit level
       const habitsAvgLevel = habits.length > 0 
         ? habits.reduce((sum, habit) => sum + habit.level, 0) / habits.length 
         : 1;
-      
-      // Calculate weighted average of all component levels
       const componentLevels = [
         { level: academics.overallLevel, weight: academicsWeight },
         { level: goals.overallLevel, weight: goalsWeight },
@@ -349,41 +295,22 @@ export const AppProvider = ({ children }) => {
         { level: timetable.overallLevel, weight: timetableWeight },
         { level: habitsAvgLevel, weight: 1.0 }
       ];
-      
       const totalWeight = componentLevels.reduce((sum, item) => sum + item.weight, 0);
       const weightedLevelSum = componentLevels.reduce((sum, item) => sum + (item.level * item.weight), 0);
-      
-      // Calculate overall level (rounded down)
       const calculatedLevel = Math.floor(weightedLevelSum / totalWeight);
-      const totalLevel = Math.max(1, calculatedLevel); // Ensure minimum level is 1
-      
-      // Determine title based on level
+      const totalLevel = Math.max(1, calculatedLevel);
       let title = 'Noob Idiot';
-      
-      if (totalLevel >= 10) {
-        title = 'GOATED';
-      } else if (totalLevel >= 7) {
-        title = 'Master Achiever';
-      } else if (totalLevel >= 5) {
-        title = 'Skilled Tracker';
-      } else if (totalLevel >= 3) {
-        title = 'Novice Explorer';
-      } else if (totalLevel >= 2) {
-        title = 'Beginner Adventurer';
-      }
-      
-      // Update player level and title
-      setPlayer(prev => ({
-        ...prev,
-        level: totalLevel,
-        title: title
-      }));
+      if (totalLevel >= 10) title = 'GOATED';
+      else if (totalLevel >= 7) title = 'Master Achiever';
+      else if (totalLevel >= 5) title = 'Skilled Tracker';
+      else if (totalLevel >= 3) title = 'Novice Explorer';
+      else if (totalLevel >= 2) title = 'Beginner Adventurer';
+      setPlayer(prev => ({ ...prev, level: totalLevel, title }));
     };
-    
     calculateOverallLevel();
   }, [habits, hobbies, academics, goals, books, socialMedia, timetable]);
 
-  // Add a new habit
+  // Add new habit
   const addHabit = (name) => {
     const newHabit = {
       id: uuidv4(),
@@ -395,11 +322,10 @@ export const AppProvider = ({ children }) => {
       completed: false,
       history: []
     };
-    
     setHabits(prev => [...prev, newHabit]);
   };
 
-  // Add a new hobby
+  // Add new hobby
   const addHobby = (name) => {
     const newHobby = {
       id: uuidv4(),
@@ -411,11 +337,10 @@ export const AppProvider = ({ children }) => {
       completed: false,
       history: []
     };
-    
     setHobbies(prev => [...prev, newHobby]);
   };
 
-  // Complete a habit or hobby
+  // Complete activity
   const completeActivity = (id, type) => {
     if (type === 'habit') {
       setHabits(prev => prev.map(habit => {
@@ -425,29 +350,13 @@ export const AppProvider = ({ children }) => {
           let newLevel = habit.level;
           let xpRemaining = newXP;
           let nextLevelXP = habit.nextLevelXP;
-          
-          // Level up if XP threshold reached
           if (newXP >= habit.nextLevelXP) {
             newLevel += 1;
             xpRemaining = newXP - habit.nextLevelXP;
             nextLevelXP = Math.floor(habit.nextLevelXP * 1.5);
-            
-            // Update player XP when leveling up
-            setPlayer(prev => ({
-              ...prev,
-              totalXP: prev.totalXP + 50
-            }));
+            setPlayer(prev => ({ ...prev, totalXP: prev.totalXP + 50 }));
           }
-          
-          return {
-            ...habit,
-            xp: xpRemaining,
-            level: newLevel,
-            nextLevelXP,
-            streak: newStreak,
-            completed: true,
-            history: [...habit.history, { date: new Date(), completed: true }]
-          };
+          return { ...habit, xp: xpRemaining, level: newLevel, nextLevelXP, streak: newStreak, completed: true, history: [...habit.history, { date: new Date(), completed: true }] };
         }
         return habit;
       }));
@@ -459,72 +368,37 @@ export const AppProvider = ({ children }) => {
           let newLevel = hobby.level;
           let xpRemaining = newXP;
           let nextLevelXP = hobby.nextLevelXP;
-          
-          // Level up if XP threshold reached
           if (newXP >= hobby.nextLevelXP) {
             newLevel += 1;
             xpRemaining = newXP - hobby.nextLevelXP;
             nextLevelXP = Math.floor(hobby.nextLevelXP * 1.5);
-            
-            // Update player XP when leveling up
-            setPlayer(prev => ({
-              ...prev,
-              totalXP: prev.totalXP + 75
-            }));
+            setPlayer(prev => ({ ...prev, totalXP: prev.totalXP + 75 }));
           }
-          
-          return {
-            ...hobby,
-            xp: xpRemaining,
-            level: newLevel,
-            nextLevelXP,
-            streak: newStreak,
-            completed: true,
-            history: [...hobby.history, { date: new Date(), completed: true }]
-          };
+          return { ...hobby, xp: xpRemaining, level: newLevel, nextLevelXP, streak: newStreak, completed: true, history: [...hobby.history, { date: new Date(), completed: true }] };
         }
         return hobby;
       }));
     }
   };
 
-  // Delete a habit or hobby
   const deleteActivity = (id, type) => {
-    if (type === 'habit') {
-      setHabits(prev => prev.filter(habit => habit.id !== id));
-    } else if (type === 'hobby') {
-      setHobbies(prev => prev.filter(hobby => hobby.id !== id));
-    }
+    if (type === 'habit') setHabits(prev => prev.filter(habit => habit.id !== id));
+    else if (type === 'hobby') setHobbies(prev => prev.filter(hobby => hobby.id !== id));
   };
 
-  // Add XP to specific category and update levels
   const addXP = (amount, category) => {
-    // Update player's total XP
-    setPlayer(prev => ({
-      ...prev,
-      totalXP: prev.totalXP + amount
-    }));
-    
-    // Update category-specific XP and check for level up
+    setPlayer(prev => ({ ...prev, totalXP: prev.totalXP + amount }));
     switch(category) {
       case 'academics':
         setAcademics(prev => {
           const newXP = prev.totalXP + amount;
           let newLevel = prev.overallLevel;
           let newNextLevelXP = prev.nextLevelXP;
-          
-          // Check for level up
           if (newXP >= prev.nextLevelXP) {
             newLevel += 1;
             newNextLevelXP = Math.floor(prev.nextLevelXP * 1.5);
           }
-          
-          return {
-            ...prev,
-            totalXP: newXP,
-            overallLevel: newLevel,
-            nextLevelXP: newNextLevelXP
-          };
+          return { ...prev, totalXP: newXP, overallLevel: newLevel, nextLevelXP: newNextLevelXP };
         });
         break;
       case 'goals':
@@ -532,19 +406,11 @@ export const AppProvider = ({ children }) => {
           const newXP = prev.totalXP + amount;
           let newLevel = prev.overallLevel;
           let newNextLevelXP = prev.nextLevelXP;
-          
-          // Check for level up
           if (newXP >= prev.nextLevelXP) {
             newLevel += 1;
             newNextLevelXP = Math.floor(prev.nextLevelXP * 1.5);
           }
-          
-          return {
-            ...prev,
-            totalXP: newXP,
-            overallLevel: newLevel,
-            nextLevelXP: newNextLevelXP
-          };
+          return { ...prev, totalXP: newXP, overallLevel: newLevel, nextLevelXP: newNextLevelXP };
         });
         break;
       case 'books':
@@ -552,19 +418,11 @@ export const AppProvider = ({ children }) => {
           const newXP = prev.totalXP + amount;
           let newLevel = prev.overallLevel;
           let newNextLevelXP = prev.nextLevelXP;
-          
-          // Check for level up
           if (newXP >= prev.nextLevelXP) {
             newLevel += 1;
             newNextLevelXP = Math.floor(prev.nextLevelXP * 1.5);
           }
-          
-          return {
-            ...prev,
-            totalXP: newXP,
-            overallLevel: newLevel,
-            nextLevelXP: newNextLevelXP
-          };
+          return { ...prev, totalXP: newXP, overallLevel: newLevel, nextLevelXP: newNextLevelXP };
         });
         break;
       case 'social':
@@ -572,66 +430,35 @@ export const AppProvider = ({ children }) => {
           const newXP = prev.totalXP + amount;
           let newLevel = prev.disciplineLevel;
           let newNextLevelXP = prev.nextLevelXP;
-          
-          // Check for level up
           if (newXP >= prev.nextLevelXP) {
             newLevel += 1;
             newNextLevelXP = Math.floor(prev.nextLevelXP * 1.5);
           }
-          
-          return {
-            ...prev,
-            totalXP: newXP,
-            disciplineLevel: newLevel,
-            nextLevelXP: newNextLevelXP
-          };
+          return { ...prev, totalXP: newXP, disciplineLevel: newLevel, nextLevelXP: newNextLevelXP };
         });
         break;
       case 'timetable':
-        // Create a timetable state if it doesn't exist yet
-        if (!timetable) {
-          setTimetable({
-            overallLevel: 1,
-            totalXP: amount,
-            nextLevelXP: 500
-          });
-        } else {
-          setTimetable(prev => {
-            const newXP = prev.totalXP + amount;
-            let newLevel = prev.overallLevel;
-            let newNextLevelXP = prev.nextLevelXP;
-            
-            // Check for level up
-            if (newXP >= prev.nextLevelXP) {
-              newLevel += 1;
-              newNextLevelXP = Math.floor(prev.nextLevelXP * 1.5);
-            }
-            
-            return {
-              ...prev,
-              totalXP: newXP,
-              overallLevel: newLevel,
-              nextLevelXP: newNextLevelXP
-            };
-          });
-        }
-        break;
-      default:
-        // Just add to player XP if no specific category
+        setTimetable(prev => {
+          const newXP = prev.totalXP + amount;
+          let newLevel = prev.overallLevel;
+          let newNextLevelXP = prev.nextLevelXP;
+          if (newXP >= prev.nextLevelXP) {
+            newLevel += 1;
+            newNextLevelXP = Math.floor(prev.nextLevelXP * 1.5);
+          }
+          return { ...prev, totalXP: newXP, overallLevel: newLevel, nextLevelXP: newNextLevelXP };
+        });
         break;
     }
   };
 
-  // Context value
   const value = {
-    // User authentication
     user,
     authLoading,
     signup,
     login,
     logout,
     updateUserProfile,
-    // Player data
     player,
     habits,
     hobbies,
@@ -645,7 +472,6 @@ export const AppProvider = ({ children }) => {
     completeActivity,
     deleteActivity,
     addXP,
-    // Loading and error states
     isLoading,
     error,
   };
