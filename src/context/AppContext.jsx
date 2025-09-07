@@ -41,11 +41,9 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase when config is provided
-const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-export const db = getFirestore(app);
+let app, auth, db;
 
-try {
+const initializeFirebase = () => {
   // Only initialize if apiKey is set to a real value
   if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_API_KEY") {
     app = initializeApp(firebaseConfig);
@@ -53,11 +51,11 @@ try {
     db = getFirestore(app);
     console.log("Firebase initialized successfully");
   } else {
-    console.log("Firebase not initialized: Configuration not provided");
+    console.warn("Firebase configuration is not set");
   }
-} catch (error) {
-  console.error("Error initializing Firebase:", error);
-}
+};
+
+initializeFirebase();
 
 // Add this after the Firebase initialization
 const handleFirebaseError = (error) => {
