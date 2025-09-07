@@ -57,6 +57,9 @@ const initializeFirebase = () => {
 
 initializeFirebase();
 
+// Export db instance
+export { db };
+
 // Add this after the Firebase initialization
 const handleFirebaseError = (error) => {
   console.error('Firebase operation failed:', error);
