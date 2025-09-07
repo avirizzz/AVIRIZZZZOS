@@ -241,16 +241,6 @@ export const AppProvider = ({ children }) => {
       // Clear user first so autosave won’t run with empty state
       setUser(null);
 
-      // Reset local state
-      setPlayer({ name: 'AVIRIZZZ', level: 1, title: 'Noob Idiot', totalXP: 0, nextLevelXP: 1000 });
-      setHabits([]);
-      setHobbies([]);
-      setAcademics({ subjects: [], overallLevel: 1, totalXP: 0, nextLevelXP: 500 });
-      setGoals({ weekly: [], monthly: [], overallLevel: 1, totalXP: 0, nextLevelXP: 500 });
-      setBooks({ reading: [], completed: [], overallLevel: 1, totalXP: 0, nextLevelXP: 500 });
-      setSocialMedia({ dailyUsage: 0, limit: 120, disciplineLevel: 1, streakDays: 0, totalXP: 0, nextLevelXP: 500 });
-      setTimetable({ overallLevel: 1, totalXP: 0, nextLevelXP: 500 });
-      localStorage.clear();
     } catch (error) {
       handleFirebaseError(error);
     } finally {
