@@ -1,0 +1,641 @@
+/* SocialMedia.css */
+.social-media-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.social-media-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.social-media-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(45deg, #ff4081, #7c4dff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.social-media-header p {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+}
+
+/* Discipline Overview Section */
+.discipline-overview {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  background: rgba(26, 0, 0, 0.8);
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.discipline-score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.discipline-score h3 {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.score-display {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  justify-content: center;
+  margin: 1rem 0;
+}
+
+.score-circle {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.score-circle::before {
+  content: '';
+  position: absolute;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: var(--card-bg);
+}
+
+.score-circle span {
+  position: relative;
+  font-size: 2.5rem;
+  font-weight: bold;
+  z-index: 1;
+}
+
+.vertical-bar-container {
+  width: 40px;
+  height: 200px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.vertical-bar {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: linear-gradient(to top, #ff3333, #cc0000);
+  border-radius: 20px;
+  transition: height 0.5s ease;
+}
+
+.score-number {
+  font-size: 4rem;
+  font-weight: bold;
+  color: #e2e2e2;
+  text-shadow: 0 0 10px rgba(255, 51, 51, 0.3);
+}
+
+.discipline-level {
+  font-size: 1.2rem;
+  color: #e2e2e2;
+  margin-top: 1rem;
+}
+
+.discipline-level-container {
+  width: 100%;
+}
+
+.discipline-level-container h3 {
+  text-align: center;
+  color: #e2e2e2;
+  margin-bottom: 1.5rem;
+  font-size: 1.2rem;
+}
+
+.discipline-tips {
+  padding-left: 1rem;
+}
+
+.discipline-tips h3 {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.discipline-tips ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.discipline-tips li {
+  margin-bottom: 0.8rem;
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.discipline-tips li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+/* Social Media Content Layout */
+.social-media-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 992px) {
+  .social-media-content {
+    grid-template-columns: 3fr 2fr;
+  }
+}
+
+/* Platforms List Section */
+.platforms-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.platforms-list-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.view-mode-selector {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.view-mode-selector button {
+  background: var(--bg-secondary);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.view-mode-selector button.active {
+  background: var(--primary-color);
+  color: white;
+}
+
+.add-platform-btn {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 600;
+}
+
+.add-platform-btn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+/* Platform Form */
+.platform-form {
+  background: var(--card-bg);
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  background: var(--input-bg);
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+.submit-btn {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 1rem;
+  transition: all 0.2s ease;
+}
+
+.submit-btn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+/* Platforms Grid */
+.platforms-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.platform-card {
+  background: var(--card-bg);
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  position: relative;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.platform-card:hover {
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+}
+
+.platform-card.selected {
+  border-color: var(--primary-color);
+}
+
+.platform-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.platform-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.platform-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.discipline-badge {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 10px;
+  color: white;
+  font-weight: 600;
+}
+
+.platform-usage {
+  margin: 1rem 0;
+}
+
+.usage-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  margin-bottom: 0.3rem;
+  color: var(--text-secondary);
+}
+
+.usage-bar-container {
+  height: 8px;
+  background: var(--bg-secondary);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.usage-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.over-limit-warning {
+  color: var(--danger-color);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.delete-platform-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  color: var(--danger-color);
+  font-size: 0.8rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.platform-card:hover .delete-platform-btn {
+  opacity: 1;
+}
+
+.no-platforms {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary);
+  background: var(--card-bg);
+  border-radius: 10px;
+}
+
+/* Platform Details Section */
+.platform-details {
+  background: var(--card-bg);
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 1rem;
+}
+
+.platform-details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.platform-title {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.platform-icon-large {
+  font-size: 2.5rem;
+}
+
+.platform-title h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.discipline-badge-large {
+  font-size: 0.9rem;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  color: white;
+  font-weight: 600;
+}
+
+.usage-update-section,
+.time-limit-section,
+.platform-notes {
+  margin-bottom: 1.5rem;
+}
+
+.usage-update-section h3,
+.time-limit-section h3,
+.platform-notes h3 {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.usage-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.usage-tabs button {
+  background: var(--bg-secondary);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  flex: 1;
+}
+
+.usage-tabs button.active {
+  background: var(--primary-color);
+  color: white;
+}
+
+.usage-input {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1.5rem 0;
+}
+
+.time-input-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.time-input-container input {
+  width: 100px;
+  padding: 0.75rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.time-input-container span {
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.usage-slider {
+  margin-bottom: 0.5rem;
+}
+
+.usage-slider input {
+  width: 100%;
+}
+
+.usage-percentage {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+.limit-suggestion {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+.platform-notes textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  background: var(--input-bg);
+  color: var(--text-primary);
+  resize: vertical;
+}
+
+.discipline-tips-small {
+  background: var(--bg-secondary);
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.discipline-tips-small h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.8rem;
+}
+
+.discipline-tips-small ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.discipline-tips-small li {
+  margin-bottom: 0.5rem;
+  position: relative;
+  padding-left: 1.2rem;
+  font-size: 0.9rem;
+}
+
+.discipline-tips-small li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+/* New discipline bar styles */
+.discipline-bar-container {
+  padding: 1.5rem;
+  background: var(--card-bg);
+  border-radius: 10px;
+  margin-bottom: 2rem;
+}
+
+.discipline-bar-container h3 {
+  margin-bottom: 1rem;
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+.discipline-bar-wrapper {
+  height: 30px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.discipline-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #ff3333 0%, #cc0000 100%);
+  border-radius: 15px;
+  transition: width 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.discipline-score {
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.discipline-status {
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #e2e2e2;
+  margin-top: 1rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .social-media-container {
+    padding: 1rem;
+  }
+  
+  .discipline-overview {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .platforms-list-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .view-mode-selector {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .add-platform-btn {
+    width: 100%;
+  }
+}
