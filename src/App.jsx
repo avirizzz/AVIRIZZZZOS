@@ -23,13 +23,12 @@ function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/habits" element={<HabitTracker />} />
-            {/* Additional routes will be added as components are developed */}
             <Route path="/timetable" element={<Timetable />} />
             <Route path="/academics" element={<Academics />} />
             <Route path="/goals" element={<Goals />} />
             <Route path="/books" element={<Books />} />
-            <Route path="/social-media" element={<SocialMedia />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="/social" element={<SocialMedia />} /> {/* Changed from /social-media */}
+            <Route path="/login" element={<Profile />} /> {/* Changed from /profile */}
           </Routes>
         </main>
       </div>
